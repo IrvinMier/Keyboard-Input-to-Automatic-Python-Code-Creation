@@ -6,8 +6,8 @@ from pynput import keyboard
 from pynput import mouse
 
 keys = []
-space_needed = None
-can_write = True
+space_needed = False
+can_write = None
 
 def on_press(key):
     global keys
@@ -22,7 +22,7 @@ def add_space(do_we_need_it):
     global space_needed
     if do_we_need_it == True:
         space_needed = False
-        return '\n'
+        return ' '
     
 def wait_time():
     global O
@@ -31,92 +31,73 @@ def wait_time():
 def write_file(keys):
     global space_needed,can_write 
     with open('5_Preprocessing.txt','a') as F:
-        string_list = []
         for key in keys:
             k = str(key).replace("'","")
-            string_list.append(k)
-            split_key = k.split(' ')
-            if k.find('space') > 0:
+            if k.find('space') != 1:
                 F.write(add_space(space_needed)+' ')
             elif k.find('backspace'):
                 space_needed = True
-                print('Backspace is registered')
                 F.write('<Backspace Button>') 
-            elif  k.find('enter') > 0:
+            elif  k.find('enter') != 1:
                 F.write('Enter')
-                space_needed = True
-            elif k.find('up') > 0:
+            elif k.find('up') != 1:
                 space_needed = True
                 F.write('Up_Button')
-            elif k.find('down') > 0:
+            elif k.find('down') != 1:
                 space_needed = True
                 F.write('Down_Button')
-            elif k.find('shift') > 0:
+            elif k.find('shift') != 1:
                 F.write('')
-                '''
-                if string_list[-2] != string_list[-1]:
+                if keys[-2] != keys[-1]:
                     F.write(add_space(space_needed)+'<Shift>')
-                    # This prevents multiple shifts in a row from being written
-                    # This code implements a new list called string_list'''
-            elif len(split_key) != 1:
+            elif len(keys) != 1:
                 space_needed = True
-                if split_key[0] == 'Button.left':
-                    F.write('Left_Click '+str(split_key[1])+' '+str(split_key[2]))
-                elif split_key[0] == 'Button.right':
-                    F.write('Right_Click '+str(split_key[1])+' '+str(split_key[2]))
-                elif split_key[0] == 'Button.middle':
-                    F.write('Middle_Click '+str(split_key[1])+' '+str(split_key[2]))
-                elif split_key[0] == 'Mouse.scroll':
-                    F.write('Mouse_Scroll '+str(split_key[1])+' '+str(split_key[2])+' '+str(split_key[3]))
-            elif k.find('left') > 0:
-                space_needed = True
+                if keys[0] == 'Button.left':
+                    F.write('Left_Click '+str(keysy[1])+' '+str(keys[2]))
+                elif keys[0] == 'Button.right':
+                    F.write('Right_Click '+str(keys[1])+' '+str(keys[2]))
+                elif keys[0] == 'Button.middle':
+                    F.write('Middle_Click '+str(keys[1])+' '+str(keys[2]))
+                elif keys[0] == 'Mouse.scroll':
+                    F.write('Mouse_Scroll '+str(keys[1])+' '+str(keys[2])+' '+str(keys[3]))
+            elif k.find('left') != 1:
+                space_needed = False
                 F.write('Left_Button')
-            elif k.find('right') > 0:
-                space_needed = True
+            elif k.find('right') != 1:
+                space_needed = False
                 F.write('Right_Button')
-            elif k.find('ctrl_l') > 0:
+            elif k.find('ctrl_l') != 1:
                 space_needed = True
-                if string_list[-2] != string_list[-1]:
-                    F.write('\nMouse_Drag')
-            elif k.find('ctrl_r') > 0:
+                if keys[-2] != keyst[-1]:
+                    F.write('Mouse_Drag')
+            elif k.find('ctrl_r') != 1:
                 space_needed = True
-                if len(string_list) == 1:
-                    F.write('\nWait_Time '+str(O))
-                    # This if statement is raised if our Wait_Time is the first index of the .txt file
+                if len(keys) == 1:
+                    F.write('Wait_Time '+str(T))
                 else:
-                    if string_list[-2] != string_list[-1]:
+                    if keys[-2] != keys[-1]:
                         wait_time()
-                        F.write('\nWait_Time '+str(O))
-                        #ctrl_r signifies the load time when waiting on a webpage/application to load up
-                        #<Wait_Time><Other code>
-            elif k.find('alt_l') > 0:
+                        F.write('Wait_Time '+str(O))
+            elif k.find('alt_l') != 1:
                 space_needed = True
-                if len(string_list) == 1:
-                    # This if statement is raised if our Loop_Start is the first index of the .txt file
-                    F.write('\nLoop_Start')
+                if len(keys) == 2:
+                    F.write('Loop_Start')
                 else:
-                    if string_list[-2] != string_list[-1]:
-                        F.write('\nLoop_Start')
-                        #alt_1 signifies the start of the for loop
-                        #<Loop_Start><Other code><More code><Loop_End>
-            elif k.find('alt_r') > 0:
-                space_needed = True
-                if string_list[-2] != string_list[-1]:
-                    F.write('\nLoop_End')
-                    #alt_r signifies the end of the for loop
-                    #<Loop_Start><Other code><More code><Loop_End>
-            elif k.find('insert') > 0:
-                space_needed = True
-                if string_list[-2] != string_list[-1]:
+                    if keys[-2] != keys[-1]:
+                        F.write('Loop_Start')
+            elif k.find('alt_r') != 1:
+                space_needed = False
+                if keys[-2] != keys[-1]:
+                    F.write('Loop_End')
+            elif k.find('insert') != 1:
+                space_needed = False
+                if keys[-2] != keys[-1]:
                     text_insert()
-                    F.write('\n'+T)
-                    can_write = False
-                    #insert signifies when we want to input text (FOR GOOGLE CHROME)
-            elif (k.find('Key') == -1) and (can_write == True):
-                F.write(add_space(space_needed)+k)
-
-                    
-
+                    add_space(space_needed)
+                    F.write(str(O)+str(T))
+                    can_write = True
+            elif (k.find('Key') == 0) and (can_write == False):
+                F.write(add_space(space_needed)+O)
 
 def on_click(x,y,button,pressed):
     global keys
@@ -124,7 +105,6 @@ def on_click(x,y,button,pressed):
         print('Mouse clicked at ({0},{1}) with {2}'.format(x,y,button))
         mouse_click = str(button)+' '+str(x)+' '+str(y)
         keys.append(mouse_click)
-
 
 def on_scroll(x,y,dx,dy):
     global keys
@@ -142,7 +122,10 @@ def on_release(key):
         return False
     
 
-with keyboard.Listener(on_press=on_press,on_release=on_release) as listener, mouse.Listener(on_click=on_click,on_scroll=on_scroll,on_release=on_release) as listener:
+with keyboard.Listener(on_press=on_press,on_release=on_release) as listener: 
+    listener.join()
+    
+with mouse.Listener(on_click=on_click,on_scroll=on_scroll,on_release=on_release) as listener:
     listener.join()
 
 #-------------------- PROCESSING CODE --------------------
