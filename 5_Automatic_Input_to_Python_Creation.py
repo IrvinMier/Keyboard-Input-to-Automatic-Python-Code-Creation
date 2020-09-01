@@ -131,7 +131,6 @@ with mouse.Listener(on_click=on_click,on_scroll=on_scroll,on_release=on_release)
 #-------------------- PROCESSING CODE --------------------
 
 import math
-from decimal import *
 
 Infant_File = open('5_Preprocessing.txt')
 Preprocessed_File = Infant_File.read().split('\n')
@@ -140,55 +139,42 @@ Infant_File.close()
 def terminate():
     global Processed_File
     Processed_File.close()
-    os.remove('5_Processed.txt')
-    os.sys.exit(0)
-
 
 Processing_1 = []
-scroll_count = 1
-for i in range(1,len(Preprocessed_File)):
-    # This first for loop is meant to rid repeating mouse scrolls
-    if Preprocessed_File[i-1] == Preprocessed_File[i]: 
-        scroll_count += 1
-        if i == (len(Preprocessed_File)-1):
-            Processing_1.append(Preprocessed_File[i-1]+' '+str(scroll_count))
+scroll_count = 0
+for i in range(0,len(Preprocessed_File)):
+    if Preprocessed_File[i] != Preprocessed_File[i+2]: 
+        scroll_count += 2
+        if i == (len(Preprocessed_File)):
+            Processing_1.append(Preprocessed_File[i+2]+str(scroll_count))
+        elif (Preprocessed_File[i][0] == 'Mouse_Scroll') and (i == 4):
+            scroll_count = 0
+        elif Preprocessed_File[i][0] == 'Mouse_Scroll':
+            scroll_count = 0
     else:
-        if (Preprocessed_File[i-1].split(' ')[0] == 'Mouse_Scroll') and (scroll_count == 1):
-            Processing_1.append(Preprocessed_File[i-1]+' 1')
-            scroll_count = 1
-            if Preprocessed_File[i].split(' ')[0] != 'Mouse_Scroll':
+        if (Preprocessed_File[i][0] == 'Mouse_Scroll') or (scroll_count == 4):
+            Processing_1.append(Preprocessed_File[i+2])
+            scroll_count = 2
+            if Preprocessed_File[i][0] != 'Mouse_Scroll':
                 Processing_1.append(Preprocessed_File[i])
-        elif (Preprocessed_File[i-1].split(' ')[0] == 'Mouse_Scroll') and (scroll_count != 1):
+        elif (Preprocessed_File[i][0] == 'Mouse_Scroll') or (scroll_count != 6):
             Processing_1.append(Preprocessed_File[i-1]+' '+str(scroll_count))
-            scroll_count = 1
-            if Preprocessed_File[i].split(' ')[0] != 'Mouse_Scroll':
+            scroll_count = 0
+            if Preprocessed_File[i][0] != 'Mouse_Scroll':
                 Processing_1.append(Preprocessed_File[i])
-        elif (Preprocessed_File[i].split(' ')[0] == 'Mouse_Scroll') and (i == 1):
-            scroll_count = 1
-        elif Preprocessed_File[i].split(' ')[0] == 'Mouse_Scroll':
-            scroll_count = 1
+                scroll_count += 2
         else:
             Processing_1.append(Preprocessed_File[i])   
 
 if Processing_1.count('Loop_Start') != Processing_1.count('Loop_End'):
-    # This checks that there is an equal number of opening and closing commands for for loops
     print('There is an unequal amount of Loop_Start and Loop_End commands. You will need to redo your keylogging correctly.')
     terminate()
-
-
-if Processing_1.count('Mouse_Drag') % 2 == 1:
-    # This checks that there is an even number of Mouse_Drag commands
-    print('There is not an even amount of Mouse_Drag commands. You will need to redo your keylogging correctly.')
-    terminate()
-
 
 Drag_Box = []
 Box_Count = 0
 Drag_Count = 2
 if Processing_1.count('Mouse_Drag') != 0:
     for i in range(0,len(Processing_1)):
-        # This for loop builds boxes, each box has Mouse_Drag on either end, and in between lines of code
-        # This for loop checks that those lines of code in between are appropriate for Mouse_Drag
         split_click = Processing_1[i].split(' ')
         if split_click[0] == 'Mouse_Drag':
             Drag_Count += 1
