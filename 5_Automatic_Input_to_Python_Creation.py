@@ -2,7 +2,6 @@ import os
 import pyautogui
 os.chdir('C:\\Users\\mieri\\OneDrive\\Documents\\Python\\Personal_Projects\\5_Automatic_Code_Creation')
 
-
 from pynput import keyboard
 from pynput import mouse
 
@@ -12,11 +11,10 @@ can_write = True
 
 def on_press(key):
     global keys
-    '''
     k = str(key).replace("'","")
     if k.find('ctrl_r') > 0:
         wait_time()
-        keys.append(key+' '+str(O))'''
+        keys.append(key+' '+str(O))
     keys.append(key)
     print('{0} pressed'.format(key))
     
@@ -25,17 +23,9 @@ def add_space(do_we_need_it):
     if do_we_need_it == True:
         space_needed = False
         return '\n'
-    else:
-        return ''
-
-
-def text_insert():
-    global T
-    T = pyautogui.prompt(text='Type text you want to input',title='Text Insert',default='')
     
 def wait_time():
     global O
-    #O = pyautogui.prompt(text='Type number of seconds in integers',title='Wait Time',default='')
     O = 4
 
 def write_file(keys):
@@ -48,21 +38,19 @@ def write_file(keys):
             split_key = k.split(' ')
             if k.find('space') > 0:
                 F.write(add_space(space_needed)+' ')
-                '''
             elif k.find('backspace'):
                 space_needed = True
                 print('Backspace is registered')
-                F.write('\n<Backspace Button>')
-                BACKSPACE ELIF STATEMENT DOES NOT WORK FOR SOME REASON'''  
+                F.write('<Backspace Button>') 
             elif  k.find('enter') > 0:
-                F.write('\nEnter')
+                F.write('Enter')
                 space_needed = True
             elif k.find('up') > 0:
                 space_needed = True
-                F.write('\nUp_Button')
+                F.write('Up_Button')
             elif k.find('down') > 0:
                 space_needed = True
-                F.write('\nDown_Button')
+                F.write('Down_Button')
             elif k.find('shift') > 0:
                 F.write('')
                 '''
@@ -73,29 +61,23 @@ def write_file(keys):
             elif len(split_key) != 1:
                 space_needed = True
                 if split_key[0] == 'Button.left':
-                    F.write('\nLeft_Click '+str(split_key[1])+' '+str(split_key[2]))
+                    F.write('Left_Click '+str(split_key[1])+' '+str(split_key[2]))
                 elif split_key[0] == 'Button.right':
-                    F.write('\nRight_Click '+str(split_key[1])+' '+str(split_key[2]))
+                    F.write('Right_Click '+str(split_key[1])+' '+str(split_key[2]))
                 elif split_key[0] == 'Button.middle':
-                    F.write('\nMiddle_Click '+str(split_key[1])+' '+str(split_key[2]))
+                    F.write('Middle_Click '+str(split_key[1])+' '+str(split_key[2]))
                 elif split_key[0] == 'Mouse.scroll':
-                    F.write('\nMouse_Scroll '+str(split_key[1])+' '+str(split_key[2])+' '+str(split_key[3]))
+                    F.write('Mouse_Scroll '+str(split_key[1])+' '+str(split_key[2])+' '+str(split_key[3]))
             elif k.find('left') > 0:
                 space_needed = True
-                F.write('\nLeft_Button')
+                F.write('Left_Button')
             elif k.find('right') > 0:
                 space_needed = True
-                F.write('\nRight_Button')
+                F.write('Right_Button')
             elif k.find('ctrl_l') > 0:
                 space_needed = True
-                if len(string_list) == 1:
+                if string_list[-2] != string_list[-1]:
                     F.write('\nMouse_Drag')
-                    # This if statement is raised if our Mouse_Drag is the first index of the .txt file
-                else:
-                    if string_list[-2] != string_list[-1]:
-                        F.write('\nMouse_Drag')
-                        #ctrl_l signifies when we drag our mouse, the order of how it's clicked goes like this
-                        #<Mouse_Drag><Left_Click 1><Left_Click 2><Mouse_Drag>
             elif k.find('ctrl_r') > 0:
                 space_needed = True
                 if len(string_list) == 1:
